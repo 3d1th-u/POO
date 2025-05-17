@@ -35,6 +35,7 @@ print(type(z))
 
 
 #4. solicitud de datos
+"""
 a= input("introduce cualquier dato:")
 
 b= int(input("introduce un numero entero:"))
@@ -42,3 +43,18 @@ b= int(input("introduce un numero entero:"))
 c= float(input("introduce un numero decimal:"))
 
 print(a,b,c)
+"""
+
+#5. boolean, comparacion y logicos
+
+print(10<9)
+print(10>9)
+print(10==9)
+print(10>=9)
+print(10<=9)
+print(10!=9)
+
+x= 1
+print(x<5 and x<10)
+print(x<5 or x<10)
+print(not(x<5 and x<10))
