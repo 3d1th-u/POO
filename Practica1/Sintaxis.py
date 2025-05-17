@@ -32,3 +32,13 @@ print(x,y,z)
 print(type(x))
 print(type(y))
 print(type(z))
+
+
+#4. solicitud de datos
+a= input("introduce cualquier dato:")
+
+b= int(input("introduce un numero entero:"))
+
+c= float(input("introduce un numero decimal:"))
+
+print(a,b,c)
