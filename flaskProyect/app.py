@@ -18,6 +18,11 @@ def saludar(nombre):
 def paginaNoE(e):
     return 'Cuidado: Error de capa 8!'
 
+#esta ruta maneja el error 405
+@app.errorhandler(405)
+def metodonoP(e):
+    return 'revisa el metodo de envio de tu ruta (GET o POST) !',405
+
 
 #ruta doble
 @app.route('/usuario')
@@ -26,7 +31,7 @@ def dobleroute():
     return 'soy el mismo recurso del servidor'
 
 #ruta POSt
-@app.route('/formulario',methods=['GET'])
+@app.route('/formulario',methods=['POST'])
 def formulario():
     return 'Soy un formulario'
 
