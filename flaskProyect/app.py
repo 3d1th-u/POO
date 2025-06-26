@@ -22,7 +22,37 @@ mysql=MySQL(app)
 #ruta de inicio
 @app.route('/')
 def home():
-    return render_template('formulario.html')
+    try:
+        cursor= mysql.connection.cursor()
+        cursor.execute('SELECT * FROM tb_albums')
+        consultaTodo=cursor.fetchall()
+        return render_template('formulario.html', errores={}, albums=consultaTodo)
+    
+    except Exception as e:
+        print('Error al consultar todo: '+e)
+        return render_template('formulario.html', errores={},albums=[])
+        
+    finally:
+        cursor.close()
+
+
+#ruta de detalle
+@app.route('/detalles/<int:id>')
+def detalle(id):
+    try:
+        cursor= mysql.connection.cursor()
+        cursor.execute('SELECT * FROM tb_albums WHERE id=%s',(id,))
+        consultaId=cursor.fetchone()
+        return render_template('consulta.html', album=consultaId)
+    
+    except Exception as e:
+        print('Error al consultar id: '+e)
+        return redirect(url_for('home'))
+        
+    finally:
+        cursor.close()
+        
+        
 
 #ruta de consulta
 @app.route('/consulta')
