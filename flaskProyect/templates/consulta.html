@@ -8,7 +8,37 @@
 
 <body>
     <h2> Vista de Consulta </h2>
+
+    <table>
+        <thead>
+            <tr>
+                    <td> ID:</td>
+                    <td> Album:</td>
+                    <td> Artista:</td>
+                    <td> Año de publicació:</td>
+            </tr>
+        </thead>
+
+
+        <tbody>
+
+            <tr>
+                <td>{{ album.0}}</td>
+                <td>{{ album.1}}</td>
+                <td>{{ album.2}}</td>
+                <td>{{ album.3}}</td>
+                <td><a href="#">Actualizar</a></td>
+                <td><a href="#">Eliminar</a></td>
+            </tr>
+
+        </tbody>
+    </table>
+
+
+    <br>
     <a href="/"> Abrir vista del formulario </a>
+
+
 </body>
 
 </html>
