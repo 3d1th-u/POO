@@ -46,7 +46,7 @@ def detalle(id):
         return render_template('consulta.html', album=consultaId)
     
     except Exception as e:
-        print('Error al consultar id: '+e)
+        print('Error al consultar id: '+str(e))
         return redirect(url_for('home'))
         
     finally:
@@ -57,7 +57,30 @@ def detalle(id):
 #ruta de consulta
 @app.route('/consulta')
 def consulta():
-    return render_template('consulta.html')
+    return render_template('consulta.html', albums=[])
+
+
+
+
+
+
+#ruta de actualizar
+@app.route('/fromUpdate/<int:id>')
+def fromUpdate(id):
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * FROM tb_albums WHERE id=%s',(id,))
+        actualizarId = cursor.fetchone()
+        return render_template('fromUpdate.html', album=actualizarId)
+    
+    except Exception as e:
+        print('Error al actualizar id: '+str(e))
+        return redirect(url_for('consulta'))
+        
+    finally:
+        cursor.close()
+
+    
 
 # ruta para el insert
 @app.route('/guardarAlbum',methods=['POST'])
@@ -93,7 +116,7 @@ def guardar():
             flash('El album se guardo en la BD')
             return redirect(url_for('home'))
         
-        except:
+        except Exception as e:
             mysql.connection.rollback()
             flash('Algo fallo: '+ str(e))
             return redirect(url_for('home'))
@@ -103,6 +126,55 @@ def guardar():
     
     return render_template('formulario.html',errores=errores)
 #return render_template('consulta.html')
+
+
+
+# ruta para el update
+@app.route('/actualizarAlbum',methods=['POST'])
+def actualizar():
+    
+    #listas de errores
+    errores={}
+
+    #obtener los datos para actualizar
+    #inputs de la vista
+    Utitulo= request.form.get('txtTitulo','').strip()
+    Uartista= request.form.get('txtArtista','').strip()
+    Uanio= request.form.get('txtAnio','').strip()
+    Uid= request.form.get('txtId')
+    
+    
+    if not Utitulo:
+        errores['txtTitulo']='Nombre del album OBLIGATORIO'
+    if not Uartista:
+        errores['txtArtista']='Nombre del artista OBLIGATORIO'
+    if not Uanio:
+        errores['txtAnio']='Año es OBLIGATORIO'
+    elif not Uanio.isdigit() or int(Uanio)< 1800 or int(Uanio)> 2100:
+        errores['txtAnio']='Ingresa un año valido'
+        
+    
+    if not errores:
+    #intentamos ejecutar el insert
+        try:
+            cursor= mysql.connection.cursor()
+            cursor.execute('UPDATE tb_albums SET albums = %s,artista = %s,anio = %s WHERE id = %s',(Utitulo, Uartista, Uanio, Uid))
+            mysql.connection.commit()
+            flash('El album se actualizo en la BD')
+            return redirect(url_for('home'))
+        
+        except Exception as e:
+            mysql.connection.rollback()
+            flash('Algo fallo: '+ str(e))
+            return redirect(url_for('home'))
+        
+        finally:
+            cursor.close()
+    
+    if errores:
+        album = (Uid, Utitulo, Uartista, Uanio)  # recreamos la tupla que espera la plantilla
+        return render_template('fromUpdate.html', errores=errores, album=album)
+
 
 
 # ruta para probar la conexion con mysql
