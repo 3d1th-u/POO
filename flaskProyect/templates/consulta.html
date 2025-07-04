@@ -29,7 +29,7 @@
                 <td>{{ album[3] }}</td>
                 
                 <td><a href="{{ url_for('fromUpdate', id=album[0])}}">Actualizar</a></td>
-                <td><a href="#">Eliminar</a></td>
+                <td><a href="{{ url_for('confirmDelete', id=album[0])}}">Eliminar</a></td>
             </tr>
             
         </tbody>
