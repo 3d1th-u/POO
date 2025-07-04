@@ -22,19 +22,34 @@ mysql=MySQL(app)
 #ruta de inicio
 @app.route('/')
 def home():
-    try:
-        cursor= mysql.connection.cursor()
-        cursor.execute('SELECT * FROM tb_albums')
-        consultaTodo=cursor.fetchall()
-        return render_template('formulario.html', errores={}, albums=consultaTodo)
-    
-    except Exception as e:
-        print('Error al consultar todo: '+e)
-        return render_template('formulario.html', errores={},albums=[])
+        try:
+            cursor= mysql.connection.cursor()
+            cursor.execute('SELECT * FROM tb_albums WHERE estatus = 1')
+            consultaTodo = cursor.fetchall()
+            
+            return render_template('formulario.html', errores={}, albums=consultaTodo)
         
+        except Exception as e:
+
+            flash('Algo fallo: '+ str(e))
+            return render_template('formulario.html', errores={}, albums=[])
+        
+        finally:
+            cursor.close()
+
+
+@app.route('/eliminados')
+def eliminados():
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * FROM tb_albums WHERE estatus = 0')
+        eliminados = cursor.fetchall()
+        return render_template('eliminados.html', albums=eliminados)
+    except Exception as e:
+        flash('Error al consultar eliminados: ' + str(e))
+        return redirect(url_for('home'))
     finally:
         cursor.close()
-
 
 #ruta de detalle
 @app.route('/detalles/<int:id>')
@@ -174,6 +189,41 @@ def actualizar():
     if errores:
         album = (Uid, Utitulo, Uartista, Uanio)  # recreamos la tupla que espera la plantilla
         return render_template('fromUpdate.html', errores=errores, album=album)
+
+#ruta del soft delete
+
+@app.route('/confirmDelete/<int:id>')
+def confirmDelete(id):
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * FROM tb_albums WHERE id=%s', (id,))
+        album = cursor.fetchone()
+        
+        return render_template('confirmDel.html', album=album)
+    except Exception as e:
+        flash('Error al obtener el álbum: ' + str(e))
+        
+        return redirect(url_for('home'))
+    finally:
+        cursor.close()
+
+
+@app.route('/eliminarAlbum', methods=['POST'])
+def eliminarAlbum():
+    id = request.form.get('id')
+
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute('UPDATE tb_albums SET estatus = 0 WHERE id = %s', (id,))
+        mysql.connection.commit()
+        flash('Álbum fue eliminado correctamente')
+        return redirect(url_for('home'))
+    except Exception as e:
+        mysql.connection.rollback()
+        flash('Hubo un error al eliminar el álbum: ' + str(e))
+        return redirect(url_for('home'))
+    finally:
+        cursor.close()
 
 
 
