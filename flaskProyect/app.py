@@ -37,20 +37,6 @@ def home():
         finally:
             cursor.close()
 
-
-@app.route('/eliminados')
-def eliminados():
-    try:
-        cursor = mysql.connection.cursor()
-        cursor.execute('SELECT * FROM tb_albums WHERE estatus = 0')
-        eliminados = cursor.fetchall()
-        return render_template('eliminados.html', albums=eliminados)
-    except Exception as e:
-        flash('Error al consultar eliminados: ' + str(e))
-        return redirect(url_for('home'))
-    finally:
-        cursor.close()
-
 #ruta de detalle
 @app.route('/detalles/<int:id>')
 def detalle(id):
@@ -75,10 +61,6 @@ def consulta():
     return render_template('consulta.html', albums=[])
 
 
-
-
-
-
 #ruta de actualizar
 @app.route('/fromUpdate/<int:id>')
 def fromUpdate(id):
@@ -94,8 +76,6 @@ def fromUpdate(id):
         
     finally:
         cursor.close()
-
-    
 
 # ruta para el insert
 @app.route('/guardarAlbum',methods=['POST'])
@@ -189,9 +169,25 @@ def actualizar():
     if errores:
         album = (Uid, Utitulo, Uartista, Uanio)  # recreamos la tupla que espera la plantilla
         return render_template('fromUpdate.html', errores=errores, album=album)
+    
+    
+#RUTA PARA VER LOS ELIMINADOS
+@app.route('/eliminados')
+def eliminados():
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT * FROM tb_albums WHERE estatus = 0')
+        eliminados = cursor.fetchall()
+        return render_template('eliminados.html', albums=eliminados)
+    except Exception as e:
+        flash('Error al consultar eliminados: ' + str(e))
+        return redirect(url_for('home'))
+    finally:
+        cursor.close()
 
-#ruta del soft delete
+    
 
+#RUTA DEL SOFT DELETE
 @app.route('/confirmDelete/<int:id>')
 def confirmDelete(id):
     try:
