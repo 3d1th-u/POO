@@ -1,0 +1,53 @@
+
+{%extends 'plantilla.html'%}
+
+    {%block body%}
+
+    <div class="col-md-7"> <!--columna de 7 espacios -->    
+    <h2 style="color: red;" class="display-4 text-primary mt-5 mb-5">¿Quieres eliminar el album?</h2>
+
+
+    {% with mensajes = get_flashed_messages() %}
+        {% if mensajes %}
+            {% for msj in mensajes %}
+                <h4 style="color: blue;">{{ msj }}</h4>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('albums.eliminarAlbum', id=album[0]) }}" method="POST">
+
+        <input type="hidden" name="id" value="{{ album[0] }}">
+
+    <div class="col-md-7"> <!--columna de 7 espacios -->
+    <table>
+        <thead>
+            <tr>
+                <td> Album:</td>
+                <td> Artista:</td>
+                <td> Año de publicación:</td>
+            </tr>
+        </thead>
+
+
+        <tbody>
+            
+            <tr>
+                <td>{{ album[1] }}</td> 
+                <td>{{ album[2] }}</td> 
+                <td>{{ album[3] }}</td>
+
+            </tr>
+        </tbody>
+
+    </table>
+        <button type="submit" class="btn btn-success">Eliminar Álbum</button>
+    </form>
+
+    <br>
+    <a href="{{ url_for('albums.home') }}">Regresar al Formulario</a>
+
+    </div>
+    </div>
+
+    {%endblock%}

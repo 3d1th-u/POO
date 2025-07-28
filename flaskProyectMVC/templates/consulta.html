@@ -1,0 +1,43 @@
+
+{%extends 'plantilla.html'%}
+
+    {%block body%}
+
+<div class="row"> 
+
+    <div class="col-md-5"><!--columna de 5 espacios -->
+    
+        <h2 class="display-4 text-primary mt-5 mb-5"> Vista de Consulta </h2>
+
+    <table>
+        <thead>
+            <tr>
+                    <td> ID:</td>
+                    <td> Album:</td>
+                    <td> Artista:</td>
+                    <td> Año de publicación:</td>
+            </tr>
+        </thead>
+
+
+        <tbody>
+            
+            <tr>
+                <td>{{ album[0] }}</td>
+                <td>{{ album[1] }}</td>
+                <td>{{ album[2] }}</td>
+                <td>{{ album[3] }}</td>
+                
+                <td><a href="{{ url_for('albums.fromUpdate', id=album[0])}}">Actualizar</a></td>
+                <td><a href="{{ url_for('albums.confirmDelete', id=album[0])}}">Eliminar</a></td>
+            </tr>
+            
+        </tbody>
+    </table>
+
+
+    <br>
+    <a href="/"> Abrir vista del formulario </a>
+</div>
+</div>
+    {%endblock%}
